@@ -12,6 +12,21 @@ export default new Router({
       component: Home
     },
     {
+      path: '/customers',
+      name: 'CustomerListing',
+      component: () => import('./views/Customer/List.vue')
+    },
+    {
+      path: '/customer/add',
+      name: 'CustomerAdd',
+      component: () => import('./views/Customer/Add.vue')
+    },
+    {
+      path: '/customer/edit/:id',
+      name: 'CustomerEdit',
+      component: () => import('./views/Customer/Edit.vue')
+    },
+    {
       path: '/about',
       name: 'about',
       // route level code-splitting
