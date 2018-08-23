@@ -9,10 +9,10 @@ import {
   string,
 } from 'vue-mc/validation'
   /**
-   * Task model
+   * Ticket model
    */
 
-  class Customer extends Model
+  class Ticket extends Model
   {
 
 // Default attributes that define the "empty" state.
@@ -20,15 +20,12 @@ import {
     {
       return {
         id: null,
-        firstname: null,
-        lastname: null,
-        street: null,
-        zipcode: null,
-        city: null,
-        country: "Deutschland",
-        state: null,
-        email: null,
-        tickets: []
+        title: null,
+        description: null,
+        hours: null,
+        minutes: null,
+        active: null,
+        status: null,
       }
     }
 
@@ -44,23 +41,17 @@ import {
 // Attribute validation
     validation()
     {
-      return {
-        firstname: required.and(string),
-        lastname: required.and(string),
-        email:  required.and(string),
-        zipcode:  required.and(string),
-        city:  required.and(string),
-      }
+      return {}
     }
 
 // Route configuration
     routes()
     {
       return {
-        fetch: 'api/customer/{id}',
-        delete: 'api/customer/{id}',
-        save: 'api/customer',
-        update: 'api/customer/{id}',
+        fetch: 'api/ticket/{id}',
+        delete: 'api/ticket/{id}',
+        save: 'api/ticket',
+        update: 'api/ticket/{id}',
       }
     }
 
@@ -84,4 +75,4 @@ import {
 
   }
 
-export { Customer as default }
+export { Ticket as default }

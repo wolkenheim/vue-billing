@@ -6,12 +6,14 @@
           <v-text-field
             v-model="customer.firstname"
             label="First Name"
+
             required
           ></v-text-field>
         </v-flex>
         <v-flex xs12 sm6>
           <v-text-field
             v-model="customer.lastname"
+
             label="Last Name"
             required
           ></v-text-field>
@@ -60,8 +62,8 @@
         </v-flex>
         <v-flex xs12>
           <v-textarea
-            v-model="customer.notes"
-            label="Notes"
+            v-model="customer.note"
+            label="Note"
           ></v-textarea>
         </v-flex>
         <v-flex xs12>
@@ -96,7 +98,14 @@
       },
       submit() {
         let self = this;
-        self.customer.save();
+        self.customer.save().then( (response) => {
+          return self.$router.push({name: "CustomerListing"});
+        }).catch(error => {
+          if(error.hasOwnProperty('errors')){
+            console.log(error.errors);
+          }
+
+        });
 
         /*
         if (self.$refs.createForm.validate()) {

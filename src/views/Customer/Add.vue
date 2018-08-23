@@ -7,6 +7,7 @@
 <script>
 
   import CustomerForm from './Form.vue'
+  import Customer from '../../models/customer.js';
 
   export default {
     name: 'CustomerAdd',
@@ -19,20 +20,11 @@
       }
     },
     created(){
-      console.log(this.config);
+      this.customer = new Customer();
     },
     data() {
       return {
-        customer: {
-          firstname: "Harry",
-          lastname: "Sally",
-          street: "Hausgasse 16",
-          zipcode: "76723",
-          city: "Stuttgart",
-          country: "Deutschland",
-          state: "",
-          email: ""
-        }
+        customer: {}
 
       }
     },
