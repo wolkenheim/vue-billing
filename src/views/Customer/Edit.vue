@@ -28,9 +28,7 @@
       let id =  this.$route.params.id;
       this.customer = new Customer();
       this.customer.id = id;
-      this.customer.fetch().then(
-        (r) => {console.log(r.response.data.tickets)}
-      ).catch((error) => {
+      this.customer.fetch().then().catch((error) => {
         console.log(error);
         return this.$router.push({name: "CustomerListing"});
       });

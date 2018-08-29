@@ -6,14 +6,12 @@
           <v-text-field
             v-model="customer.firstname"
             label="First Name"
-
             required
           ></v-text-field>
         </v-flex>
         <v-flex xs12 sm6>
           <v-text-field
             v-model="customer.lastname"
-
             label="Last Name"
             required
           ></v-text-field>

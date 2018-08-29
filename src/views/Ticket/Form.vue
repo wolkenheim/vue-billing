@@ -37,7 +37,6 @@
     props: ['customerId', 'ticket'],
     methods: {
       saveTicket(){
-        console.log("save ticket");
         this.closeDialog();
       },
       closeDialog(){

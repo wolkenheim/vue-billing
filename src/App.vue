@@ -66,6 +66,10 @@ export default {
         icon: '',
         title: 'Customers',
         path: 'CustomerListing'
+      },{
+        icon: '',
+        title: 'Invoices',
+        path: 'InvoiceListing'
       }],
       miniVariant: false,
       right: true,
