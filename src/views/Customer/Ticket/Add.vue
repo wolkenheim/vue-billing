@@ -8,9 +8,9 @@
 </template>
 
 <script>
-  import Ticket from '../../models/ticket.js';
+  import Ticket from '../../../models/ticket.js';
   import TicketForm from './Form';
-  import EventBus from '../../components/EventBus.js';
+  import EventBus from '../../../components/EventBus.js';
   export default {
     name: 'TicketAdd',
     components: {

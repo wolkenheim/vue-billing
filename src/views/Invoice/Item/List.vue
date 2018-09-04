@@ -1,10 +1,22 @@
 <template>
-  <v-card height=100%>
+  <v-card>
+    <v-card-title primary-title>
+      <v-toolbar flat dark color="teal">
+        <v-toolbar-title>Rechnungsposten</v-toolbar-title>
+        <v-spacer></v-spacer>
+
+        <v-btn icon @click="addItem()">
+          <v-icon dark>add</v-icon>
+        </v-btn>
+      </v-toolbar>
+    </v-card-title>
+
     <v-card-text>
       <v-alert v-if="showAlert" @click="showAlert = false" :value="true" :type="alertType" dismissible>
         {{ alertMessage }}
       </v-alert>
       <v-data-table
+
         v-model="selected"
         :headers="headers"
         :items="items"
@@ -44,7 +56,7 @@
               </v-btn>
             </td>
             <td>
-              <v-btn icon small @click="deleteCustomer( props.item.id )">
+              <v-btn icon small @click="deleteItem( props.item )">
                 <v-icon>delete</v-icon>
               </v-btn>
             </td>
@@ -54,9 +66,6 @@
           {{ props.pageStart }} - {{ props.pageStop }} von {{ props.itemsLength }}
         </template>
       </v-data-table>
-      <v-btn fab small dark color="indigo" @click="addItem()">
-        <v-icon dark>add</v-icon>
-      </v-btn>
       <invoice-item-form :item="itemToEdit"></invoice-item-form>
     </v-card-text>
 
@@ -88,26 +97,34 @@
           descending: true
         },
         headers: [
-          {text: 'Titel', value: 'title'},
-          {text: 'Steuer', value: 'tax_rate'},
-          {text: 'Preis (netto)', value: 'price'},
-
-          {text: '', value: 'edit'},
-          {text: '', value: 'del'},
+          {text: 'Titel', value: 'title', width: '50%'},
+          {text: 'Steuer', value: 'tax_rate', width: '50px'},
+          {text: 'Preis (netto)', value: 'price', width: '50px'},
+          {text: '', value: 'edit', width: '20px'},
+          {text: '', value: 'del', width: '20px'},
         ],
       }
     },
     methods: {
       addItem() {
         this.itemToEdit = new InvoiceItem();
+        this.itemToEdit.invoice_id = this.invoiceId;
         EventBus.$emit('openItemForm');
       },
       editItem(item) {
         this.itemToEdit = new InvoiceItem(item);
         EventBus.$emit('openItemForm');
       },
-      deleteItem(id) {
-
+      deleteItem(item) {
+        let itemToDelete = new InvoiceItem(item);
+        itemToDelete.delete().then((response) => {
+          if (response.response.data.hasOwnProperty('message')) {
+            this.alertMessage = response.response.data.message;
+            this.alertType = (response.response.data.success) ? 'success' : 'error';
+            this.showAlert = true;
+            EventBus.$emit('invoiceUpdated');
+          }
+        });
       }
     },
 

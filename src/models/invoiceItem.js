@@ -24,7 +24,8 @@ import {
         title: "Test",
         description: "Text",
         price:100,
-        tax_rate: 19
+        tax_rate: 19,
+        invoice_id: 0
       }
     }
 

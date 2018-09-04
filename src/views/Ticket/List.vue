@@ -2,7 +2,7 @@
   <v-card height=100%>
     <v-card-title>
       <div>
-        <h3 class="headline mb-0">Tickets des Kunden</h3>
+        <h3 class="headline mb-0">Alle Tickets</h3>
       </div>
       <v-spacer></v-spacer>
       <v-text-field
@@ -20,7 +20,7 @@
       <v-data-table
         v-model="selected"
         :headers="headers"
-        :items="tickets"
+        :items="ticketsModels"
         :search="search"
         :loading="loading"
         select-all
@@ -47,8 +47,9 @@
         </template>
         <template slot="items" slot-scope="props">
           <tr :active="props.selected" @click="props.selected = !props.selected">
-            <td>{{ props.item.description }}</td>
-            <td>{{ props.item.status }}</td>
+            <td>{{ props.item.created_at }}</td>
+            <td>{{ props.item.title }}</td>
+            <td>{{ props.item.namedStatus }}</td>
             <td>
               <v-btn icon small :to="{ name: 'CustomerEdit', params: {id: props.item.id } }">
                 <v-icon>edit</v-icon>
@@ -65,7 +66,6 @@
           {{ props.pageStart }} - {{ props.pageStop }} von {{ props.itemsLength }}
         </template>
       </v-data-table>
-      <ticket-add :customer-id="customerId"></ticket-add>
     </v-card-text>
 
   </v-card>
@@ -73,17 +73,14 @@
 
 <script>
   import DataTables from "../../mixins/data-tables";
-  import TicketAdd from './Add';
+  import TicketList from '../../models/ticketList.js';
 
   export default {
     name: 'TicketList',
-    components: {
-      TicketAdd
-    },
     mixins: [DataTables],
-    props: ['tickets','customerId'],
     data() {
       return {
+        ticketList: {},
         showAlert: false,
         alertMessage: null,
         alertType: 'success',
@@ -92,12 +89,24 @@
           descending: true
         },
         headers: [
-          {text: 'Name', value: 'lastname'},
-          {text: 'Offene Tickets', value: 'tickets_count'},
+          {text: 'Datum', value: 'created_at'},
+          {text: 'Title', value: 'title'},
+          {text: 'Status', value: 'namedStatus'},
           {text: '', value: 'edit'},
           {text: '', value: 'del'},
         ],
       }
+    },
+    computed: {
+      ticketsModels() {
+        if(this.ticketList.hasOwnProperty('models')){
+          return this.ticketList.models;
+        }
+      },
+    },
+    mounted() {
+      this.ticketList = new TicketList();
+      this.ticketList.fetch();
     },
     methods: {
       deleteTicket() {

@@ -41,5 +41,10 @@ export default new Router({
       name: 'InvoiceAdd',
       component: () => import('./views/Invoice/Add.vue')
     },
+    {
+      path: '/tickets',
+      name: 'TicketListing',
+      component: () => import('./views/Ticket/List.vue')
+    },
   ]
 })

@@ -2,20 +2,20 @@
   <div class="about">
     <h1>Edit Customer</h1>
     <customer-form :customer="customer"></customer-form>
-    <ticket-list :customer-id="customer.id" :tickets="customer.tickets"></ticket-list>
+    <customer-ticket-list :customer-id="customer.id" :tickets="customer.tickets"></customer-ticket-list>
   </div>
 </template>
 <script>
 
   import CustomerForm from './Form.vue'
   import Customer from '../../models/customer.js';
-  import TicketList from '../Ticket/List';
+  import CustomerTicketList from './Ticket/List';
 
   export default {
     name: 'CustomerEdit',
     components: {
       CustomerForm,
-      TicketList
+      CustomerTicketList
     },
     data() {
       return {

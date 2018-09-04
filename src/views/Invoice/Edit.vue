@@ -1,22 +1,29 @@
 <template>
   <v-layout>
-    <v-flex xs12 sm6 offset-sm3>
+    <v-flex xs12 sm8 offset-sm2>
       <v-card>
         <v-card-title primary-title>
-            <v-flex xs12 sm8>
-              <h3 class="headline mb-0">Edit Invoice</h3>
-            </v-flex>
-          <v-flex xs12 sm4>
-            <v-btn small color="primary" v-on:click="generatePdf()">Download PDF<v-icon right dark>cloud_download</v-icon></v-btn>
-          </v-flex>
+          <v-toolbar flat dark color="teal">
+            <v-toolbar-title>Rechnung bearbeiten</v-toolbar-title>
+            <v-spacer></v-spacer>
+
+            <v-btn icon @click="generatePdf()">
+              <v-icon dark>cloud_download</v-icon>
+            </v-btn>
+          </v-toolbar>
         </v-card-title>
 
         <v-card-text>
+          <v-alert v-if="showAlert" @click="showAlert = false" :value="true" :type="alertType" dismissible>
+            {{ alertMessage }}
+          </v-alert>
           <invoice-form :invoice="invoice"></invoice-form>
-          <invoice-item-list :invoice-id="invoice.id" :items="invoice.items"></invoice-item-list>
-          <invoice-sum-block :invoice="invoice"></invoice-sum-block>
         </v-card-text>
       </v-card>
+
+      <invoice-item-list :invoice-id="invoice.id" :items="invoice.items"></invoice-item-list>
+      <invoice-sum-block :invoice="invoice"></invoice-sum-block>
+
     </v-flex>
   </v-layout>
 </template>
@@ -37,11 +44,20 @@
     },
     data() {
       return {
-        invoice: new Invoice()
+        invoice: new Invoice(),
+        alertMessage: "",
+        alertType: "",
+        showAlert: false
       }
     },
     created() {
-      EventBus.$on('invoiceItemUpdated', () => {
+      EventBus.$on('invoiceAlert', (param) => {
+        console.log(param);
+        this.alertMessage = param.alertMessage;
+        this.alertType = param.alertType;
+        this.showAlert = true;
+      });
+      EventBus.$on('invoiceUpdated', () => {
         this.fetchInvoice();
       });
     },

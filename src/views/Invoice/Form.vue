@@ -49,12 +49,13 @@
   </v-form>
 </template>
 <script>
-
+  import EventBus from '../../components/EventBus.js';
   export default {
     name: 'InvoiceForm',
     props: ['invoice'],
     data: () => ({
       valid: false,
+
     }),
     methods:{
       cancel() {
@@ -62,11 +63,12 @@
       },
       submit() {
         let self = this;
-        self.invoice.save().then( (response) => {
-          return self.$router.push({name: "InvoiceListing"});
+        self.invoice.save().then( () => {
+          EventBus.$emit('invoiceAlert', { alertMessage: "Rechnung wurde gespeichert.", alertType: "success" });
         }).catch(error => {
           if(error.hasOwnProperty('errors')){
             console.log(error.errors);
+            EventBus.$emit('invoiceAlert', { alertMessage: error.errors, alertType: "error" });
           }
 
         });

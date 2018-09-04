@@ -2,7 +2,7 @@
   <v-card height=100%>
     <v-card-title>
       <div>
-        <h3 class="headline mb-0">Listing der Rechnungen</h3>
+        <h3 class="headline mb-0">Tickets des Kunden</h3>
       </div>
       <v-spacer></v-spacer>
       <v-text-field
@@ -20,7 +20,7 @@
       <v-data-table
         v-model="selected"
         :headers="headers"
-        :items="invoicesModels"
+        :items="tickets"
         :search="search"
         :loading="loading"
         select-all
@@ -47,16 +47,15 @@
         </template>
         <template slot="items" slot-scope="props">
           <tr :active="props.selected" @click="props.selected = !props.selected">
-            <td>{{ props.item.date}}</td>
-            <td>{{ props.item.title}}</td>
-            <td>{{ props.item.customer.fullname }}</td>
+            <td>{{ props.item.description }}</td>
+            <td>{{ props.item.status }}</td>
             <td>
-              <v-btn icon small :to="{ name: 'InvoiceEdit', params: {id: props.item.id } }">
+              <v-btn icon small @click="editTicket( props.item )">
                 <v-icon>edit</v-icon>
               </v-btn>
             </td>
             <td>
-              <v-btn icon small @click="deleteInvoice( props.item )">
+              <v-btn icon small @click="deleteTicket( props.item )">
                 <v-icon>delete</v-icon>
               </v-btn>
             </td>
@@ -66,24 +65,29 @@
           {{ props.pageStart }} - {{ props.pageStop }} von {{ props.itemsLength }}
         </template>
       </v-data-table>
-      <v-btn fab dark color="indigo" :to="{name: 'CustomerAdd'}">
-        <v-icon dark>add</v-icon>
-      </v-btn>
+      <ticket-form :ticket="ticketToEdit"></ticket-form>
     </v-card-text>
 
   </v-card>
 </template>
 
 <script>
-  import DataTables from "../../mixins/data-tables";
-  import InvoiceList from '../../models/invoiceList.js';
+  import Ticket from '../../../models/ticket.js';
+  import DataTables from "../../../mixins/data-tables";
+  import TicketForm from './Form'
+  import EventBus from '../../../components/EventBus.js';
 
   export default {
-    name: 'InvoiceList',
+    name: 'CustomerTicketList',
+    components: {
+      TicketForm,
+
+    },
     mixins: [DataTables],
+    props: ['tickets','customerId'],
     data() {
       return {
-        invoiceList: {},
+        ticketToEdit: {},
         showAlert: false,
         alertMessage: null,
         alertType: 'success',
@@ -92,36 +96,25 @@
           descending: true
         },
         headers: [
-          {text: 'Date', value: 'date'},
-          {text: 'Titel', value: 'title'},
+          {text: 'Name', value: 'lastname'},
+          {text: 'Offene Tickets', value: 'tickets_count'},
           {text: '', value: 'edit'},
           {text: '', value: 'del'},
         ],
       }
     },
-    computed: {
-      invoicesModels() {
-        if(this.invoiceList.hasOwnProperty('models')){
-          return this.invoiceList.models;
-        }
-      },
-    },
-    mounted() {
-      this.invoiceList = new InvoiceList();
-      this.invoiceList.fetch();
-    },
     methods: {
-      create() {
-        return this.$router.push({name: "CustomerAdd"});
+      addTicket() {
+        this.ticketToEdit = new Ticket();
+        this.ticketToEdit.customer_id = this.customerId;
+        EventBus.$emit('openTicketForm');
       },
-      deleteInvoice(invoice) {
-        invoice.delete().then((response) => {
-          if (response.response.data.hasOwnProperty('message')) {
-            this.alertMessage = response.response.data.message;
-            this.alertType = (response.response.data.success) ? 'success' : 'error';
-            this.showAlert = true;
-          }
-        });
+      editTicket(ticket) {
+        this.ticketToEdit = new Ticket(ticket);
+        EventBus.$emit('openTicketForm');
+      },
+      deleteTicket(ticket) {
+
       }
     },
 

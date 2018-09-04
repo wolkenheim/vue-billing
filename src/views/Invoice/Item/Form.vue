@@ -5,11 +5,8 @@
         width="500"
       >
         <v-card>
-          <v-card-title
-            class="headline grey lighten-2"
-            primary-title
-          >
-            Edit Item
+          <v-card-title class="flat dark teal">
+            <h3 class="white--text">Add / Edit Item</h3>
           </v-card-title>
 
           <v-card-text>
@@ -83,7 +80,7 @@
       submit() {
         this.item.save().then((response) => {
           this.dialog = false;
-          EventBus.$emit('invoiceItemUpdated');
+          EventBus.$emit('invoiceUpdated');
         }).catch(error => {
           if (error.hasOwnProperty('errors')) {
             console.log(error.errors);
