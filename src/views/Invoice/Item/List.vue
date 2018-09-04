@@ -54,8 +54,10 @@
           {{ props.pageStart }} - {{ props.pageStop }} von {{ props.itemsLength }}
         </template>
       </v-data-table>
-      <invoice-item-add :invoiceId="invoiceId"></invoice-item-add>
-      <invoice-item-edit :item="itemToEdit"></invoice-item-edit>
+      <v-btn fab small dark color="indigo" @click="addItem()">
+        <v-icon dark>add</v-icon>
+      </v-btn>
+      <invoice-item-form :item="itemToEdit"></invoice-item-form>
     </v-card-text>
 
   </v-card>
@@ -64,8 +66,7 @@
 <script>
   import DataTables from "../../../mixins/data-tables";
   import FormatPrice from "../../../mixins/format-price";
-  import InvoiceItemAdd from "./Add";
-  import InvoiceItemEdit from "./Edit";
+  import InvoiceItemForm from "./Form";
   import EventBus from '../../../components/EventBus.js';
   import InvoiceItem from '../../../models/invoiceItem.js';
 
@@ -74,8 +75,7 @@
     props: ['items','invoiceId'],
     mixins: [DataTables,FormatPrice],
     components: {
-      InvoiceItemAdd,
-      InvoiceItemEdit
+      InvoiceItemForm,
     },
     data() {
       return {
@@ -98,9 +98,13 @@
       }
     },
     methods: {
+      addItem() {
+        this.itemToEdit = new InvoiceItem();
+        EventBus.$emit('openItemForm');
+      },
       editItem(item) {
         this.itemToEdit = new InvoiceItem(item);
-        EventBus.$emit('openEditDialog');
+        EventBus.$emit('openItemForm');
       },
       deleteItem(id) {
 

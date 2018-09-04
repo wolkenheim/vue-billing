@@ -10,9 +10,11 @@
           primary-title
         >
           Edit Item
+
         </v-card-title>
 
         <v-card-text>
+
           <invoice-item-form :formRef="formRef" :item="item"></invoice-item-form>
         </v-card-text>
 
@@ -52,7 +54,8 @@
     methods:{
       submit(){
         EventBus.$emit('saveInvoiceItem',this.formRef)
-      }
+      },
+
     }
   }
 </script>
