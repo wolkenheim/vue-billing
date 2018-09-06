@@ -60,6 +60,8 @@
   import EventBus from '../../../components/EventBus.js';
   import InvoiceItem from '../../../models/invoiceItem.js';
 
+
+
   export default {
     name: 'InvoiceItemForm',
     props: ['item'],

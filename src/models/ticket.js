@@ -26,6 +26,8 @@ import {
         minutes: null,
         active: null,
         status: null,
+        customer_id: null,
+        namedStatus: null
       }
     }
 
@@ -33,8 +35,7 @@ import {
     mutations()
     {
       return {
-        //title: String,
-        //body: String,
+        namedStatus: () => this.getNamedStatus(this.status)
       }
     }
 
@@ -60,6 +61,41 @@ import {
       return function(route, parameters = {}){
         return store.state.config.API_URL+self.getDefaultRouteResolver()(route, parameters)
       }
+    }
+
+    /**
+     * Array of text - value pair for all ticket status. Creating an own model for them would be a bit of an overkill.
+     * @returns {*[]}
+     */
+    getTicketStatuses()
+    {
+      return [{
+        text: 'Not Active',
+        value: 0
+      },{
+        text: 'Active',
+        value: 1
+      }, {
+        text: 'Billed',
+        value: 2,
+      }];
+    }
+
+    /**
+     * get a string representation of integer status of current ticket
+     * @returns {*}
+     */
+    getNamedStatus(status){
+      if(!status) return this.getTicketStatuses()[0].text;
+
+      let statusObj = this.getTicketStatuses().find( (el) => {
+        return el.value == status;
+      });
+
+      if (typeof statusObj != 'undefined'){
+        return statusObj.text;
+      }
+      return "";
     }
 
     options() {

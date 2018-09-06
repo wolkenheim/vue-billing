@@ -51,12 +51,12 @@
             <td>{{ props.item.title }}</td>
             <td>{{ props.item.namedStatus }}</td>
             <td>
-              <v-btn icon small :to="{ name: 'CustomerEdit', params: {id: props.item.id } }">
+              <v-btn icon small @click="editTicket( props.item )">
                 <v-icon>edit</v-icon>
               </v-btn>
             </td>
             <td>
-              <v-btn icon small @click="deleteTicket( props.item.id )">
+              <v-btn icon small @click="deleteTicket( props.item )">
                 <v-icon>delete</v-icon>
               </v-btn>
             </td>
@@ -67,19 +67,25 @@
         </template>
       </v-data-table>
     </v-card-text>
-
+    <ticket-form :ticket="ticketToEdit"></ticket-form>
   </v-card>
 </template>
 
 <script>
   import DataTables from "../../mixins/data-tables";
   import TicketList from '../../models/ticketList.js';
+  import EventBus from '../../components/EventBus.js';
+  import TicketForm from '../Customer/Ticket/Form'
 
   export default {
     name: 'TicketList',
     mixins: [DataTables],
+    components: {
+      TicketForm,
+    },
     data() {
       return {
+        ticketToEdit: {},
         ticketList: {},
         showAlert: false,
         alertMessage: null,
@@ -109,8 +115,20 @@
       this.ticketList.fetch();
     },
     methods: {
-      deleteTicket() {
-
+      editTicket(ticket) {
+        this.ticketToEdit = ticket;
+        EventBus.$emit('openTicketForm');
+      },
+      deleteTicket(ticket) {
+        let ticketToDelete = ticket;
+        ticketToDelete.delete().then((response) => {
+          if (response.response.data.hasOwnProperty('message')) {
+            this.alertMessage = response.response.data.message;
+            this.alertType = (response.response.data.success) ? 'success' : 'error';
+            this.showAlert = true;
+            EventBus.$emit('customerUpdated');
+          }
+        });
       }
     },
 

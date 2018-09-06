@@ -1,17 +1,27 @@
 <template>
   <v-card height=100%>
     <v-card-title>
-      <div>
-        <h3 class="headline mb-0">Tickets des Kunden</h3>
-      </div>
-      <v-spacer></v-spacer>
-      <v-text-field
-        append-icon="search"
-        label="Suche"
-        single-line
-        hide-details
-        v-model="search"
-      ></v-text-field>
+      <v-toolbar flat dark color="teal">
+        <v-toolbar-title>Tickets des Kunden</v-toolbar-title>
+        <v-spacer></v-spacer>
+
+        <v-btn icon @click="addTicket()">
+          <v-icon dark>add</v-icon>
+        </v-btn>
+        <v-btn icon @click="showSearch = !showSearch">
+          <v-icon dark>search</v-icon>
+        </v-btn>
+        <v-text-field
+          v-show="showSearch"
+          append-icon="search"
+          label="Suche"
+          single-line
+          hide-details
+          v-model="search"
+        ></v-text-field>
+      </v-toolbar>
+
+
     </v-card-title>
     <v-card-text>
       <v-alert v-if="showAlert" @click="showAlert = false" :value="true" :type="alertType" dismissible>
@@ -47,8 +57,8 @@
         </template>
         <template slot="items" slot-scope="props">
           <tr :active="props.selected" @click="props.selected = !props.selected">
-            <td>{{ props.item.description }}</td>
-            <td>{{ props.item.status }}</td>
+            <td>{{ props.item.title }}</td>
+            <td>{{ props.item.namedStatus }}</td>
             <td>
               <v-btn icon small @click="editTicket( props.item )">
                 <v-icon>edit</v-icon>
@@ -67,7 +77,6 @@
       </v-data-table>
       <ticket-form :ticket="ticketToEdit"></ticket-form>
     </v-card-text>
-
   </v-card>
 </template>
 
@@ -81,12 +90,12 @@
     name: 'CustomerTicketList',
     components: {
       TicketForm,
-
     },
     mixins: [DataTables],
     props: ['tickets','customerId'],
     data() {
       return {
+        showSearch: false,
         ticketToEdit: {},
         showAlert: false,
         alertMessage: null,
@@ -96,8 +105,8 @@
           descending: true
         },
         headers: [
-          {text: 'Name', value: 'lastname'},
-          {text: 'Offene Tickets', value: 'tickets_count'},
+          {text: 'Title', value: 'title'},
+          {text: 'Status', value: 'namedStatus'},
           {text: '', value: 'edit'},
           {text: '', value: 'del'},
         ],
@@ -110,11 +119,19 @@
         EventBus.$emit('openTicketForm');
       },
       editTicket(ticket) {
-        this.ticketToEdit = new Ticket(ticket);
+        this.ticketToEdit = ticket;
         EventBus.$emit('openTicketForm');
       },
       deleteTicket(ticket) {
-
+        let ticketToDelete = ticket;
+        ticketToDelete.delete().then((response) => {
+          if (response.response.data.hasOwnProperty('message')) {
+            this.alertMessage = response.response.data.message;
+            this.alertType = (response.response.data.success) ? 'success' : 'error';
+            this.showAlert = true;
+            EventBus.$emit('customerUpdated');
+          }
+        });
       }
     },
 

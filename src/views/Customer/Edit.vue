@@ -10,6 +10,7 @@
   import CustomerForm from './Form.vue'
   import Customer from '../../models/customer.js';
   import CustomerTicketList from './Ticket/List';
+  import EventBus from '../../components/EventBus.js';
 
   export default {
     name: 'CustomerEdit',
@@ -24,14 +25,24 @@
         },
       }
     },
-    mounted(){
-      let id =  this.$route.params.id;
+    created() {
+      EventBus.$on('customerUpdated', () => {
+        this.fetchCustomer();
+      });
+    },
+    mounted() {
+      let id = this.$route.params.id;
       this.customer = new Customer();
       this.customer.id = id;
-      this.customer.fetch().then().catch((error) => {
-        console.log(error);
-        return this.$router.push({name: "CustomerListing"});
-      });
+      this.fetchCustomer();
+    },
+    methods: {
+      fetchCustomer(){
+        this.customer.fetch().then().catch((error) => {
+          console.log(error);
+          return this.$router.push({name: "CustomerListing"});
+        });
       }
+    }
   }
 </script>

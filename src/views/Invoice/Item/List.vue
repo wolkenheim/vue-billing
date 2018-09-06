@@ -4,10 +4,9 @@
       <v-toolbar flat dark color="teal">
         <v-toolbar-title>Rechnungsposten</v-toolbar-title>
         <v-spacer></v-spacer>
-
         <v-btn icon @click="addItem()">
-          <v-icon dark>add</v-icon>
-        </v-btn>
+        <v-icon dark>add</v-icon>
+      </v-btn>
       </v-toolbar>
     </v-card-title>
 
