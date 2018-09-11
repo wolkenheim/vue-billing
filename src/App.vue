@@ -10,18 +10,17 @@
       app
     >
       <v-list>
-
         <v-list-tile
           value="true"
           v-for="(item, i) in items"
           :key="i"
+          :class="item.class"
         >
           <v-list-tile-action>
             <v-icon v-html="item.icon"></v-icon>
           </v-list-tile-action>
-
           <v-list-tile-content>
-            <v-list-tile-title v-text="item.title" @click="navigateTo(item.path)"></v-list-tile-title>
+            <v-list-tile-title v-text="item.title" @click="navigateTo(item.routeName)"></v-list-tile-title>
           </v-list-tile-content>
         </v-list-tile>
       </v-list>
@@ -45,36 +44,59 @@
 </template>
 
 <script>
-
-export default {
-  name: 'App',
-  methods: {
-    navigateTo: function (routeName) {
-      return this.$router.push({name: routeName});
-    }  },
-  data () {
-    return {
-      clipped: false,
-      drawer: true,
-      fixed: false,
-      items: [{
-        icon: '',
-        title: 'Customers',
-        path: 'CustomerListing'
-      },{
-        icon: '',
-        title: 'Invoices',
-        path: 'InvoiceListing'
-      },{
-        icon: '',
-        title: 'Tickets',
-        path: 'TicketListing'
-      }],
-      miniVariant: false,
-      right: true,
-      rightDrawer: false,
-      title: 'Billing'
+  export default {
+    name: 'App',
+    methods: {
+      navigateTo: function (routeName) {
+        return this.$router.push({name: routeName});
+      },
+      setActiveClass(routeName) {
+        this.items.forEach((item) => {
+          if (item.routeName == routeName) {
+            item.class = "active-menu";
+          } else {
+            item.class = '';
+          }
+        })
+      }
+    },
+    watch: {
+      '$route' (to, from) {
+        this.setActiveClass(this.$route.name);
+      }
+    },
+    data() {
+      return {
+        activeClass: "",
+        clipped: false,
+        drawer: true,
+        fixed: false,
+        items: [{
+          icon: '',
+          title: 'Customers',
+          routeName: 'CustomerListing',
+          class: ''
+        }, {
+          icon: '',
+          title: 'Invoices',
+          routeName: 'InvoiceListing',
+          class: ''
+        }, {
+          icon: '',
+          title: 'Tickets',
+          routeName: 'TicketListing',
+          class: ''
+        }],
+        miniVariant: false,
+        right: true,
+        rightDrawer: false,
+        title: 'Billing'
+      }
     }
   }
-}
 </script>
+<style type="css">
+  .active-menu {
+    background-color: #ccc;
+  }
+</style>

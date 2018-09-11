@@ -20,4 +20,4 @@ yarn-error.log*
 *.sln
 *.sw*
 .DS_STORE
-config/config.json
+config/config.js
