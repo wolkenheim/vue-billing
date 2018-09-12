@@ -1,10 +1,9 @@
 <template>
-  <v-card height=100%>
+  <v-card>
     <v-card-title>
       <v-toolbar flat dark color="teal">
         <v-toolbar-title>Tickets des Kunden</v-toolbar-title>
         <v-spacer></v-spacer>
-
         <v-btn icon @click="addTicket()">
           <v-icon dark>add</v-icon>
         </v-btn>
@@ -20,8 +19,6 @@
           v-model="search"
         ></v-text-field>
       </v-toolbar>
-
-
     </v-card-title>
     <v-card-text>
       <v-alert v-if="showAlert" @click="showAlert = false" :value="true" :type="alertType" dismissible>
@@ -30,7 +27,7 @@
       <v-data-table
         v-model="selected"
         :headers="headers"
-        :items="tickets"
+        :items="ticketsModels"
         :search="search"
         :loading="loading"
         select-all
@@ -75,16 +72,16 @@
           {{ props.pageStart }} - {{ props.pageStop }} von {{ props.itemsLength }}
         </template>
       </v-data-table>
-      <ticket-form :ticket="ticketToEdit"></ticket-form>
+      <ticket-form :ticket="ticketToEdit" :type="ticketFormType"></ticket-form>
     </v-card-text>
   </v-card>
 </template>
 
 <script>
-  import Ticket from '../../../models/ticket.js';
-  import DataTables from "../../../mixins/data-tables";
+  import Ticket from '@/models/ticket.js';
+  import DataTables from '@/mixins/data-tables';
   import TicketForm from './Form'
-  import EventBus from '../../../components/EventBus.js';
+  import EventBus from '@/components/EventBus.js';
 
   export default {
     name: 'CustomerTicketList',
@@ -95,6 +92,7 @@
     props: ['tickets','customerId'],
     data() {
       return {
+        ticketFormType: '',
         showSearch: false,
         ticketToEdit: {},
         showAlert: false,
@@ -112,13 +110,22 @@
         ],
       }
     },
+    computed: {
+      ticketsModels() {
+        if(this.tickets.hasOwnProperty('models')){
+          return this.tickets.models;
+        }
+      }
+    },
     methods: {
       addTicket() {
+        this.ticketFormType = 'add';
         this.ticketToEdit = new Ticket();
         this.ticketToEdit.customer_id = this.customerId;
         EventBus.$emit('openTicketForm');
       },
       editTicket(ticket) {
+        this.ticketFormType = 'edit';
         this.ticketToEdit = ticket;
         EventBus.$emit('openTicketForm');
       },

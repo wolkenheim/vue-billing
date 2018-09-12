@@ -1,6 +1,9 @@
 import {Model, Collection} from 'vue-mc'
 import store from '../store.js';
 import Ticket from './ticket';
+import TicketList from './ticketList';
+import Invoice from './invoice';
+import InvoiceList from './invoiceList';
 import {
   boolean,
   equal,
@@ -11,7 +14,7 @@ import {
 } from 'vue-mc/validation'
 import Vue from "vue";
   /**
-   * Task model
+   * Customer model
    */
 
   class Customer extends Model
@@ -30,7 +33,8 @@ import Vue from "vue";
         country: "Deutschland",
         state: null,
         email: null,
-        tickets: []
+        tickets: new TicketList(),
+        invoices: new InvoiceList()
       }
     }
 
@@ -123,27 +127,52 @@ import Vue from "vue";
     }
     */
 
+    /**
+     * This is a yucky part of vuemc. HasMany relationships need to be instantiated as collection manually.
+     * Otherwise you don´t have collections and models but arrays with plain data objects that came via JSON
+     * @param response
+     */
     onFetchSuccess(response){
 
       if(response.response.data.hasOwnProperty('success') && response.response.data === false){
         return;
       }
 
-      let clonedTickets = JSON.parse(JSON.stringify(response.response.data.tickets));
-      response.response.data.tickets = [];
+      let data = response.response.data;
 
-      clonedTickets.forEach( (ticket) => {
-        let ticketModel = new Ticket(ticket);
-        response.response.data.tickets.push(ticketModel);
-      });
+      this.parseJsonTicketsAsCollection(data);
+      this.parseJsonInvoicesAsCollection(data);
 
-
-      this.assign(response.response.data);
+      this.assign(data);
 
       Vue.set(this, 'fatal', false);
       Vue.set(this, 'loading', false);
 
       this.emit('fetch', { error: null });
+    }
+
+    parseJsonTicketsAsCollection(data){
+      if (!data.hasOwnProperty('tickets')) return;
+
+      let clonedTickets = JSON.parse(JSON.stringify(data.tickets));
+      data.tickets = new TicketList();
+
+      clonedTickets.forEach( (ticket) => {
+        let ticketModel = new Ticket(ticket);
+        data.tickets.add(ticketModel);
+      });
+    }
+
+    parseJsonInvoicesAsCollection(data){
+      if (!data.hasOwnProperty('invoices')) return;
+
+      let clonedInvoices = JSON.parse(JSON.stringify(data.invoices));
+      data.invoices = new InvoiceList();
+
+      clonedInvoices.forEach( (invoice) => {
+        let invoiceModel = new Invoice(invoice);
+        data.invoices.add(invoiceModel);
+      });
     }
 
     options() {

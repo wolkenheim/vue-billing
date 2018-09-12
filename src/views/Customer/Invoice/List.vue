@@ -1,17 +1,24 @@
 <template>
-  <v-card height=100%>
+  <v-card>
     <v-card-title>
-      <div>
-        <h3 class="headline mb-0">Alle Tickets</h3>
-      </div>
-      <v-spacer></v-spacer>
-      <v-text-field
-        append-icon="search"
-        label="Suche"
-        single-line
-        hide-details
-        v-model="search"
-      ></v-text-field>
+      <v-toolbar flat dark color="teal">
+        <v-toolbar-title>Rechnungen des Kunden</v-toolbar-title>
+        <v-spacer></v-spacer>
+        <v-btn icon @click="addInvoice()">
+          <v-icon dark>add</v-icon>
+        </v-btn>
+        <v-btn icon @click="showSearch = !showSearch">
+          <v-icon dark>search</v-icon>
+        </v-btn>
+        <v-text-field
+          v-show="showSearch"
+          append-icon="search"
+          label="Suche"
+          single-line
+          hide-details
+          v-model="search"
+        ></v-text-field>
+      </v-toolbar>
     </v-card-title>
     <v-card-text>
       <v-alert v-if="showAlert" @click="showAlert = false" :value="true" :type="alertType" dismissible>
@@ -20,7 +27,7 @@
       <v-data-table
         v-model="selected"
         :headers="headers"
-        :items="ticketsModels"
+        :items="invoiceModels"
         :search="search"
         :loading="loading"
         select-all
@@ -51,7 +58,7 @@
             <td>{{ props.item.title }}</td>
             <td>{{ props.item.namedStatus }}</td>
             <td>
-              <v-btn icon small @click="editTicket( props.item )">
+              <v-btn icon small :to="{ name: 'InvoiceEdit', params: {id: props.item.id } }">
                 <v-icon>edit</v-icon>
               </v-btn>
             </td>
@@ -67,27 +74,42 @@
         </template>
       </v-data-table>
     </v-card-text>
-    <ticket-form :ticket="ticketToEdit" :type="ticketFormType"></ticket-form>
+
+    <v-layout row justify-center>
+      <v-dialog v-model="dialog"  persistent max-width="500px">
+        <v-card>
+          <v-toolbar dark color="teal">
+            <v-btn icon dark @click.native="dialog = false">
+              <v-icon>close</v-icon>
+            </v-btn>
+            <v-toolbar-title>Neue Rechnung für Kunden anlegen</v-toolbar-title>
+          </v-toolbar>
+        <invoice-form :invoice="invoiceToAdd"></invoice-form>
+        </v-card>
+      </v-dialog>
+    </v-layout>
   </v-card>
 </template>
 
 <script>
-  import DataTables from "../../mixins/data-tables";
-  import TicketList from '../../models/ticketList.js';
-  import EventBus from '../../components/EventBus.js';
-  import TicketForm from '../Customer/Ticket/Form'
+  import DataTables from "@/mixins/data-tables";
+  import EventBus from '@/components/EventBus.js';
+  import InvoiceForm from '@/views/Invoice/Form';
+  import Invoice from '@/models/invoice';
+
 
   export default {
-    name: 'TicketList',
+    name: 'CustomerInvoiceList',
     mixins: [DataTables],
-    components: {
-      TicketForm,
-    },
+    props: ['invoices', 'customerId'],
+    components: {InvoiceForm},
     data() {
       return {
-        ticketFormType: 'add',
+        dialog: false,
+        invoiceToAdd: new Invoice(),
+        showSearch: false,
         ticketToEdit: {},
-        ticketList: {},
+        invoiceList: {},
         showAlert: false,
         alertMessage: null,
         alertType: 'success',
@@ -105,34 +127,28 @@
       }
     },
     computed: {
-      ticketsModels() {
-        if(this.ticketList.hasOwnProperty('models')){
-          return this.ticketList.models;
+      invoiceModels() {
+        if (this.invoices.hasOwnProperty('models')) {
+          return this.invoices.models;
         }
       },
     },
-    mounted() {
-      this.ticketList = new TicketList();
-      this.ticketList.fetch();
-    },
     methods: {
-      editTicket(ticket) {
-        this.ticketFormType = 'edit';
-        this.ticketToEdit = ticket;
-        EventBus.$emit('openTicketForm');
+      addInvoice(){
+        this.invoiceToAdd = new Invoice();
+        this.invoiceToAdd.customer_id = this.customerId;
+        EventBus.$emit('openInvoiceForm');
+        this.dialog = true;
       },
-      deleteTicket(ticket) {
-        let ticketToDelete = ticket;
-        ticketToDelete.delete().then((response) => {
+      deleteInvoice(invoice) {
+        invoice.delete().then((response) => {
           if (response.response.data.hasOwnProperty('message')) {
             this.alertMessage = response.response.data.message;
             this.alertType = (response.response.data.success) ? 'success' : 'error';
             this.showAlert = true;
-            EventBus.$emit('customerUpdated');
           }
         });
       }
-    },
-
+    }
   }
 </script>

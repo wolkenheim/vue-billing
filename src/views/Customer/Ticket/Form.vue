@@ -2,9 +2,13 @@
   <v-layout row justify-center>
     <v-dialog v-model="dialog" persistent max-width="500px">
       <v-card>
-        <v-card-title>
-          <span class="headline">Neues Ticket erstellen</span>
-        </v-card-title>
+        <v-toolbar dark color="teal">
+          <v-btn icon dark @click.native="dialog = false">
+            <v-icon>close</v-icon>
+          </v-btn>
+          <v-toolbar-title>{{ title }}</v-toolbar-title>
+        </v-toolbar>
+
         <v-card-text>
           <v-container grid-list-md>
             <v-layout wrap>
@@ -18,13 +22,14 @@
                 <v-text-field v-model="ticket.hours" type="number" min="0" label="hours" required></v-text-field>
               </v-flex>
               <v-flex xs6>
-                <v-text-field v-model="ticket.minutes" type="number" min="0" max="59"  label="minutes" required></v-text-field>
+                <v-text-field v-model="ticket.minutes" type="number" min="0" max="59" label="minutes"
+                              required></v-text-field>
               </v-flex>
               <v-flex xs12 sm6>
                 <v-select
                   v-model="ticket.status"
                   :items="statuses"
-                  label="Select a favorite activity or create a new one"
+                  label="Bitte Status auswählen"
                 ></v-select>
               </v-flex>
             </v-layout>
@@ -43,11 +48,13 @@
 </template>
 
 <script>
-  import EventBus from '../../../components/EventBus.js';
+  import EventBus from '@/components/EventBus.js';
+
   export default {
     name: 'TicketForm',
-    props: ['ticket'],
+    props: ['ticket','type'],
     data: () => ({
+      title: '',
       dialog: false,
       statuses: []
     }),
@@ -57,9 +64,12 @@
        * so this watcher needs to be set
        */
       ticket() {
-        if(this.ticket.hasOwnProperty('getTicketStatuses')){
-          this.statuses =  this.ticket.getTicketStatuses();
+        if (this.ticket.hasOwnProperty('getTicketStatuses')) {
+          this.statuses = this.ticket.getTicketStatuses();
         }
+      },
+      type(){
+        this.title = (this.type == 'add') ? 'Neues Ticket erstellen' : 'Ticket bearbeiten';
       }
     },
     created() {
@@ -67,7 +77,7 @@
     },
     methods: {
       submit() {
-        this.ticket.save().then( () => {
+        this.ticket.save().then(() => {
           this.dialog = false;
           EventBus.$emit('customerUpdated');
         }).catch(error => {

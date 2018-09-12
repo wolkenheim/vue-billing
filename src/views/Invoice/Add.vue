@@ -1,6 +1,6 @@
 <template>
   <div class="about">
-    <h1>Add new Customer</h1>
+    <h1>Add new Invoice</h1>
     <customer-form :customer="customer"></customer-form>
   </div>
 </template>

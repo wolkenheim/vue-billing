@@ -72,17 +72,17 @@
         drawer: true,
         fixed: false,
         items: [{
-          icon: '',
+          icon: 'face',
           title: 'Customers',
           routeName: 'CustomerListing',
           class: ''
         }, {
-          icon: '',
+          icon: 'receipt',
           title: 'Invoices',
           routeName: 'InvoiceListing',
           class: ''
         }, {
-          icon: '',
+          icon: 'message',
           title: 'Tickets',
           routeName: 'TicketListing',
           class: ''
