@@ -1,4 +1,4 @@
-import {Model, Collection} from 'vue-mc'
+import BaseModel from './BaseModel.js';
 import store from '../store.js';
 import {
   boolean,
@@ -12,7 +12,7 @@ import {
    * Ticket model
    */
 
-  class Ticket extends Model
+  class Ticket extends BaseModel
   {
 
 // Default attributes that define the "empty" state.

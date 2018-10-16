@@ -55,7 +55,6 @@
     props: ['invoice'],
     data: () => ({
       valid: false,
-
     }),
     methods:{
       cancel() {

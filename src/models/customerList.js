@@ -1,9 +1,10 @@
 
-  import {Model, Collection} from 'vue-mc'
+  import {Model,Collection} from 'vue-mc'
   import Customer from './customer'
   import store from '../store.js';
+  import BaseCollection from './BaseCollection.js';
 
-  class CustomerList extends Collection {
+  class CustomerList extends BaseCollection {
 
 
     model() {

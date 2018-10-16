@@ -1,10 +1,13 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import Home from './views/Home.vue'
+import Login from './views/Login'
+import Logout from './views/Logout'
+import store from './store'
 
 Vue.use(Router)
 
-export default new Router({
+const router = new Router({
   routes: [
     {
       path: '/',
@@ -46,5 +49,25 @@ export default new Router({
       name: 'TicketListing',
       component: () => import('./views/Ticket/List.vue')
     },
-  ]
-})
+    {
+      path: '/login',
+      name: 'Login',
+      component: Login,
+    }, {
+      path: '/logout',
+      name: 'Logout',
+      component: Logout,
+    }
+  ],
+});
+
+router.beforeEach((to, from, next) => {
+
+  if(!store.getters.isLoggedIn && to.name !== "Login"){
+    next({ path: '/login' })
+  } else {
+    next();
+  }
+});
+export default router;
+

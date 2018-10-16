@@ -92,7 +92,7 @@
         },
         headers: [
           {text: 'Name', value: 'lastname'},
-          {text: 'Offene Tickets', value: 'tickets_count'},
+          {text: 'Offene Tickets', value: 'ticketsCount'},
           {text: '', value: 'edit'},
           {text: '', value: 'del'},
         ],

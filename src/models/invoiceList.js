@@ -1,9 +1,8 @@
-
-  import {Model, Collection} from 'vue-mc'
+  import BaseCollection from './BaseCollection.js';
   import Invoice from './invoice'
   import store from '../store.js';
 
-  class InvoiceList extends Collection {
+  class InvoiceList extends BaseCollection {
 
 
     model() {
@@ -22,7 +21,6 @@
         fetch: 'api/invoice',
       }
     }
-
 
     getRouteResolver() {
       return function(route, parameters = {}){

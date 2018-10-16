@@ -1,9 +1,10 @@
 
-  import {Model, Collection} from 'vue-mc'
+  import {Model} from 'vue-mc'
   import Ticket from './ticket'
   import store from '../store.js';
+  import BaseCollection from './BaseCollection.js';
 
-  class TicketList extends Collection {
+  class TicketList extends BaseCollection {
 
 
     model() {
@@ -22,8 +23,7 @@
         fetch: 'api/ticket',
       }
     }
-
-
+    
     getRouteResolver() {
       return function(route, parameters = {}){
         return store.state.config.API_URL + route;

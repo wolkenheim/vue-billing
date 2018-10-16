@@ -1,4 +1,4 @@
-import {Model, Collection} from 'vue-mc'
+import BaseModel from './BaseModel.js';
 import store from '../store.js';
 import {
   boolean,
@@ -13,7 +13,7 @@ import {
  * Invoice model
  */
 
-class Invoice extends Model {
+class Invoice extends BaseModel {
 
 // Default attributes that define the "empty" state.
   defaults() {
@@ -63,10 +63,12 @@ class Invoice extends Model {
     let route = this.getRoute('getPdf');
     let url = this.getRouteResolver()(route, {id: this.id});
 
+    let headers = this.getAuthHeaders();
+    headers["Content-Type"] = "application/pdf; charset=utf-8";
+
+
     fetch(url, {
-      headers: {
-        "Content-Type": "application/pdf; charset=utf-8",
-      },
+      headers
     })
       .then(function (response) {
         return response.blob();
@@ -75,6 +77,7 @@ class Invoice extends Model {
         const fileURL = URL.createObjectURL(myBlob);
         window.open(fileURL);
       })
+      .catch(error => console.log(error.response));
   }
 
   getRouteResolver() {

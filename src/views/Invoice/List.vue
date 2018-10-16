@@ -77,10 +77,12 @@
 <script>
   import DataTables from "../../mixins/data-tables";
   import InvoiceList from '../../models/invoiceList.js';
+  import AxiosMixin from '../../mixins/Axios/component';
+
 
   export default {
     name: 'InvoiceList',
-    mixins: [DataTables],
+    mixins: [DataTables, AxiosMixin],
     data() {
       return {
         invoiceList: {},

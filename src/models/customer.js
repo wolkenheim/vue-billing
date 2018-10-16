@@ -1,9 +1,10 @@
-import {Model, Collection} from 'vue-mc'
+import BaseModel from './BaseModel.js';
 import store from '../store.js';
 import Ticket from './ticket';
 import TicketList from './ticketList';
 import Invoice from './invoice';
 import InvoiceList from './invoiceList';
+
 import {
   boolean,
   equal,
@@ -17,7 +18,7 @@ import Vue from "vue";
    * Customer model
    */
 
-  class Customer extends Model
+  class Customer extends BaseModel
   {
 
 // Default attributes that define the "empty" state.
@@ -27,12 +28,14 @@ import Vue from "vue";
         id: null,
         firstname: null,
         lastname: null,
+        fullname: null,
         street: null,
         zipcode: null,
         city: null,
         country: "Deutschland",
         state: null,
         email: null,
+        ticketsCount: null,
         tickets: new TicketList(),
         invoices: new InvoiceList()
       }
@@ -81,12 +84,12 @@ import Vue from "vue";
      * Custom fetch method to deal with nested relationships. Otherwise you get plain js objects for tickets, not Ticket Models
      * @returns {Promise<T | void>}
      */
-    xfetch(options = {}) {
+    fetch(options = {}) {
       const config = () => ({
         url     : this.getFetchURL(),
         method  : this.getFetchMethod(),
-        params  : assign({}, this.getFetchQuery(), options.params),
-        headers : assign({}, this.getFetchHeaders(), options.headers),
+        params  : this.assign({}, this.getFetchQuery(), options.params),
+        headers : this.assign({}, this.getFetchHeaders(), options.headers),
       });
 
       return this.request(
