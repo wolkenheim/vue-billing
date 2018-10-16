@@ -18,6 +18,13 @@
       };
     }
 
+    onFetchFailure(error){
+      if(error.response.response.status === 401){
+        store.commit('setToken','');
+      }
+      return super.onFetchFailure(error)
+    }
+
   }
 
   export default BaseCollection

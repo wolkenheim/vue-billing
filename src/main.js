@@ -15,6 +15,9 @@ store.commit('setConfig', config);
 new Vue({
   router,
   store,
+  beforeCreate() {
+    this.$store.commit('initialiseToken');
+  },
   render: h => h(App)
 }).$mount('#app')
 

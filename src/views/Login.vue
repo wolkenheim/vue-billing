@@ -64,6 +64,7 @@
     },
     methods: {
       login() {
+
         let self = this;
 
         let errors = self.$refs.loginForm.validate();
@@ -72,23 +73,22 @@
         self.ajaxError = false;
         self.loader = true;
 
-
         this.axios.post(this.config.API_URL+'api/login', {
           email: self.username,
           password: self.password,
         }).then( response => {
-
-          if (response.status === 200){
+          if (response.status == 200){
             self.$store.commit('setToken',response.data.token);
-            return self.$router.push({path: '/'});
+            return this.$router.push({name: 'InvoiceListing'});
           }
-
         }).catch( error => {
           console.log("error", error.response);
           self.ajaxError = true;
           self.password = '';
           self.loader = false;
         });
+
+        return this.$router.push({name: 'InvoiceListing'});
       },
     }
 

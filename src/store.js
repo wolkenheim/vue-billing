@@ -3,19 +3,26 @@ import Vuex from 'vuex'
 
 Vue.use(Vuex)
 
-export default new Vuex.Store({
+const store = new Vuex.Store({
   state: {
     config: null,
-    token: localStorage.getItem('token'),
+    token: "",
   },
   mutations: {
     setConfig(state, value) {
       state.config = value;
     },
     setToken(state, value){
-      localStorage.setItem('token', value);
+      state.token = value;
     },
-  },
+    initialiseToken(state) {
+      if (localStorage.getItem('token')) {
+        state.token = localStorage.getItem('token')
+      } else {
+        state.token = "";
+      }
+    }
+    },
   actions: {
 
   },
@@ -27,4 +34,11 @@ export default new Vuex.Store({
       return (getters.token == '') ? false : true
     }
   }
-})
+
+});
+
+store.subscribe((mutation, state) => {
+  (mutation.type === "setToken") ? localStorage.setItem('token', mutation.payload) : ''
+
+});
+export default store;

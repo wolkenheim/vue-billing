@@ -19,7 +19,7 @@
           if (status === 401) {
             console.log("401 error");
 
-            //self.$store.commit('setToken',"");
+            self.$store.commit('setToken',"");
             self.$router.push({path: '/'});
 
           }

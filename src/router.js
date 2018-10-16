@@ -62,7 +62,6 @@ const router = new Router({
 });
 
 router.beforeEach((to, from, next) => {
-
   if(!store.getters.isLoggedIn && to.name !== "Login"){
     next({ path: '/login' })
   } else {
