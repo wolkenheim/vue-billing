@@ -1,5 +1,7 @@
 # vue-billing
 
+A handy Application to handle Customers, Tickets and Invoices
+
 ## Project setup
 ```
 npm install
