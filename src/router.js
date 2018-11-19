@@ -53,6 +53,10 @@ const router = new Router({
       path: '/login',
       name: 'Login',
       component: Login,
+      meta: {
+        layout: "no-topbar",
+        title: "Login"
+      },
     },
     {
       path: '/logout',

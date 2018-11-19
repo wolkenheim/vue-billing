@@ -1,17 +1,70 @@
 <template>
   <v-app>
-    <component :is="layout">
+    <v-navigation-drawer
+      persistent
+      :mini-variant="miniVariant"
+      :clipped="clipped"
+      v-model="drawer"
+      enable-resize-watcher
+      fixed
+      app
+    >
+      <v-list>
+        <v-list-tile
+          value="true"
+          v-for="(item, i) in items"
+          :key="i"
+          :class="item.class"
+        >
+          <v-list-tile-action>
+            <v-icon v-html="item.icon"></v-icon>
+          </v-list-tile-action>
+          <v-list-tile-content>
+            <v-list-tile-title v-text="item.title" @click="navigateTo(item.routeName)"></v-list-tile-title>
+          </v-list-tile-content>
+        </v-list-tile>
+      </v-list>
+    </v-navigation-drawer>
+    <v-toolbar
+      app
+      :clipped-left="clipped"
+    >
+      <v-toolbar-side-icon @click.stop="drawer = !drawer"></v-toolbar-side-icon>
+
+      <v-toolbar-title v-text="title"></v-toolbar-title>
+
+    </v-toolbar>
+    <v-content>
+      <v-alert
+        :value="errorMessage"
+        type="error"
+        dismissible
+        @click="errorMessage =''"
+      >
+        {{errorMessage}}
+
+      </v-alert>
       <router-view/>
-    </component>
+    </v-content>
+    <v-footer :fixed="fixed" app>
+      <span>&copy; 2018</span>
+    </v-footer>
   </v-app>
 </template>
+
 <script>
+  import { EventBus } from '@/event.js';
   export default {
-    name: 'App',
+    name: 'DefaultLayout',
     computed: {
       layout() {
         return (this.$route.meta.layout || "default") + "-layout";
       }
+    },
+    created(){
+      EventBus.$on('axiosError', message => {
+        this.errorMessage = message
+      });
     },
     methods: {
       navigateTo: function (routeName) {
@@ -34,6 +87,7 @@
     },
     data() {
       return {
+        errorMessage: "",
         activeClass: "",
         clipped: false,
         drawer: true,

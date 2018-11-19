@@ -6,28 +6,19 @@ Vue.use(Vuex)
 const store = new Vuex.Store({
   state: {
     config: null,
-    token: "",
+    token: localStorage.getItem('token') || "",
   },
   mutations: {
     setConfig(state, value) {
       state.config = value;
     },
-    setToken(state, value){
+    setToken(state, value) {
       state.token = value;
     },
-    initialiseToken(state) {
-      if (localStorage.getItem('token')) {
-        state.token = localStorage.getItem('token')
-      } else {
-        state.token = "";
-      }
-    }
-    },
-  actions: {
-
   },
+  actions: {},
   getters: {
-    token: (state, getters) => {
+    token: state => {
       return (state.token === null || typeof state.token === 'undefined' || state.token == '') ? '' : state.token
     },
     isLoggedIn: (state, getters) => {
