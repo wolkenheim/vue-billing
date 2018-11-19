@@ -80,6 +80,13 @@ class Invoice extends BaseModel {
       .catch(error => console.log(error.response));
   }
 
+  getAuthHeaders() {
+    let token = store.state.token;
+    return (typeof token === 'undefined') ? '' : {
+      Authorization: 'Bearer ' + token
+    };
+  }
+
   getRouteResolver() {
     var self = this;
     return function (route, parameters = {}) {

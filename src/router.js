@@ -57,6 +57,13 @@ const router = new Router({
         layout: "no-topbar",
         title: "Login"
       },
+      beforeEnter: (to, from, next) => {
+        if(store.getters.isLoggedIn){
+          next({path: '/'})
+        } else {
+          next();
+        }
+      }
     },
     {
       path: '/logout',

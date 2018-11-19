@@ -22,11 +22,9 @@
 
 <script>
   import axios from 'axios';
-  import AxiosMixin from '../mixins/Axios/component';
 
   export default {
     name: 'Logout',
-    mixins: { AxiosMixin },
     data() {
       return {
         msg: '',
@@ -35,12 +33,9 @@
     mounted() {
       let self = this;
 
-      let token = localStorage.getItem('token');
-
       axios({
         method: 'GET',
         url: '/api/logout',
-        headers: self.getAuthHeaders(),
       }).then((response) => {
         self.msg = 'Sie sind ausgeloggt.';
 

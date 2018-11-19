@@ -43,11 +43,9 @@
 </template>
 
 <script>
-  import Axios from '../mixins/Axios/component';
-
+  import axios from 'axios';
   export default {
     name: 'Login',
-    mixins: [Axios],
     data() {
       return {
         showPassword: false,
@@ -73,7 +71,7 @@
         self.ajaxError = false;
         self.loader = true;
 
-        this.axios.post(this.config.API_URL+'api/login', {
+        axios.post(this.config.API_URL+'api/login', {
           email: self.username,
           password: self.password,
         }).then( response => {
